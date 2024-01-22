@@ -274,12 +274,12 @@ void convert(string FileName, map<int,int> myID, const string & temp_directory, 
     std::vector<label_type> leaf_label; //label
     std::vector<pu_type> leaf_pu; //pile-up detection
     UShort_t leaf_mult;
-    ULong64_t leaf_group_time;
+    time_type leaf_group_time;
     nrj_type leaf_nrj_2; //energy
     nrj_type leaf_nrj2_2; //used if QDC2
     nrj_type leaf_nrj3_2; //used if QDC3
     nrj_type leaf_nrj4_2; //used if QDC4
-    ULong64_t leaf_t_2; //time
+    time_type leaf_t_2; //time
     label_type leaf_label_2; //label
     pu_type leaf_pu_2; //pile-up detection
 
