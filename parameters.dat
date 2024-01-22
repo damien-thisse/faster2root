@@ -1,0 +1,4 @@
+final_directory: /local/home/dt269135/Codes/faster2root/dataPerine/
+number_of_threads: 7
+input_file: /local/home/dt269135/Codes/faster2root/filename.dat
+keep_groups: false
