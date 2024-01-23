@@ -1,6 +1,8 @@
 #ifndef F2R_PARAMETERS
 #define F2R_PARAMETERS
 
+#pragma once
+
 #include<map>
 #include<string>
 
@@ -9,13 +11,8 @@ class F2R_Parameters
 public:
     // Fonction statique pour obtenir l'instance unique de la classe
     static F2R_Parameters& getInstance() {
-        // Vérifier si l'instance existe déjà
-        // Si non, en créer une nouvelle
-        if (instance == nullptr) {
-            instance = new F2R_Parameters();
-        }
-        // Retourner l'instance unique
-        return *instance;
+        static F2R_Parameters instance;
+        return instance;
     }
 
     // Autres méthodes de la classe
@@ -38,9 +35,6 @@ private:
     // Empêcher la copie de l'objet
     F2R_Parameters(const F2R_Parameters&) = delete;
     F2R_Parameters& operator=(const F2R_Parameters&) = delete;
-
-    // Instance unique de la classe
-    static F2R_Parameters* instance;
 
     //Variables membres de la classe
     std::map<int,int> F2R_IDTable;

@@ -72,6 +72,7 @@ F2R_Parameters::~F2R_Parameters(){
 
 bool F2R_Parameters::setIDTable(){
     ifstream F2R_IDTableData(F2R_IDTableFile);
+    if(F2R_IDTable.size()>0) return true;
     //Test if the file exists
     if(!F2R_IDTableData.is_open()){
         cerr << "Error: ID Table file not found ... : " << F2R_IDTableFile << endl;

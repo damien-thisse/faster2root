@@ -26,6 +26,7 @@
 //---------------------------//
 
 #include<vector>
+#include<iostream>
 
 //-----root includes-----//
 #include "TFile.h"
@@ -126,7 +127,6 @@ void Convert(string filename)
   time_type leaf_t_2; //time
   label_type leaf_label_2; //label
   Bool_t leaf_pu_2; //pile-up detection
-
   TFile* root_file = new TFile(ROOTFILENAME.data(), "RECREATE");
   TTree* root_tree = new TTree ("DataTree", "Root tree converted using F2R code");
   if(keepGroups){
@@ -166,6 +166,12 @@ void Convert(string filename)
   //END OF SETUP, NOW TOUGH THINGS ARE STARTING !!
 
   //while there are data to be read...
+
+  reader = faster_file_reader_open(DATAFILENAME.c_str());
+  if(reader == NULL){
+    printf ("error opening file %s\n", DATAFILENAME.c_str());
+    return;
+  }
   while ((data = faster_file_reader_next(reader)) != NULL){
     alias = faster_data_type_alias(data);
 
@@ -604,8 +610,6 @@ void Sort(string filename){
   F2R_Parameters& parameters = F2R_Parameters::getInstance();
 
   map<int, int> myID = parameters.getIDTable();
-
-
   bool energy2 = false, energy3 = false, energy4 = false;
   int maxEnergyBranchNeeded = parameters.getMaxEnergyBranchNeeded();
   if(maxEnergyBranchNeeded > 1){
@@ -665,7 +669,7 @@ void Sort(string filename){
   vector<bool> tampon_pu;
 
   //Opening the original unsorted tree
-  TFile *unsorted_file = TFile::Open(DATAFILENAME.data(),"READ");
+  TFile *unsorted_file = TFile::Open(ROOTFILENAME.data(),"READ");
   TTree *unsorted_tree = (TTree*)unsorted_file->Get("DataTree");
   unsorted_tree->SetBranchAddress ("label", &index_2);
   unsorted_tree->SetBranchAddress ("nrj", &enrj1_2);
@@ -695,9 +699,9 @@ void Sort(string filename){
     tampon_tm.push_back(tm_2);
     tampon_pu.push_back(pileup_2);
     tampon_enrj.push_back(enrj1_2);
-    if(energy2)tampon_enrj2.push_back(enrj2_2);
-    if(energy3)tampon_enrj3.push_back(enrj3_2);
-    if(energy4)tampon_enrj4.push_back(enrj4_2);
+    if(energy2) tampon_enrj2.push_back(enrj2_2);
+    if(energy3) tampon_enrj3.push_back(enrj3_2);
+    if(energy4) tampon_enrj4.push_back(enrj4_2);
     tampon_idx.push_back(index_2);
   }
   //Sorting the first buffer...

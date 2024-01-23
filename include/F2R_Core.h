@@ -1,6 +1,8 @@
 #ifndef F2R_CORE
 #define F2R_CORE
 
+#include <algorithm>
+#include <numeric>
 #include<string>
 #include"TROOT.h"
 

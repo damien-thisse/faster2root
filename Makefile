@@ -15,23 +15,35 @@ FASTERAC_LIBS   = $(shell pkg-config  --libs   libfasterac)
 ROOT_CFLAGS     = $(shell root-config --cflags)
 ROOT_LIBS       = $(shell root-config --libs)
 
+# Options de liage
+LDFLAGS = $(shell root-config --ldflags)
 
-CC        = g++
-CFLAGS    = ${FASTERAC_CFLAGS} ${ROOT_CFLAGS} -pthread
-LIBS      = ${FASTERAC_LIBS}   ${ROOT_LIBS}
+CXX        = g++
+CXXFLAGS    = ${FASTERAC_CFLAGS} ${ROOT_CFLAGS} -pthread -Iinclude
+LIBS      = ${FASTERAC_LIBS} ${ROOT_LIBS}
 
-SRCEXE    = faster2root.C
-EXE       = $(SRCEXE:.C=)
+TARGET       = faster2root
 
-all : $(EXE)
+# Dossier contenant les fichiers source
+SRCDIR = src
 
-$(EXE): $(SRCEXE)
-	${CC} $@.C -o $@ ${CFLAGS} ${LIBS}
+# Liste des fichiers source (.cpp) dans le dossier SRCDIR
+SOURCES = $(wildcard $(SRCDIR)/*.cpp)
 
-rootlogon :
-	@echo "---"
+# Liste des fichiers objets correspondants aux fichiers source
+OBJECTS = $(SOURCES:.cpp=.o)
 
-clean :
-	rm -f *.o
-	rm -f *__*.*
-	rm -f $(EXE)
+# Règle par défaut : génère l'exécutable
+all: $(TARGET)
+
+# Règle pour générer l'exécutable
+$(TARGET): $(OBJECTS)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(OBJECTS) -o $(TARGET) $(LIBS)
+
+# Règle générique pour la compilation des fichiers source en fichiers objets
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+# Nettoyage des fichiers objets et de l'exécutable
+clean:
+	rm -f $(OBJECTS) $(TARGET)

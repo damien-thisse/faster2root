@@ -9,7 +9,7 @@
 
 using namespace std;
 
-int main(int argc, char** argv){
+int main(){
     setenv("ROOT_ENABLE_IMT", "1", 1);
     //Instance for the first time the parameters handler class
     F2R_Parameters& parameters = F2R_Parameters::getInstance();
@@ -53,35 +53,56 @@ int main(int argc, char** argv){
     }
 
     bool endOfFile = false;
+    bool keepGroups = parameters.getKeepGroups();
     pthread_mutex_t myInputMutex;
+
+    while(!endOfFile)
+    {
+        string filename = "";
+        //pthread_mutex_lock(&myInputMutex);
+        input_file >> filename;
+        if(filename == ""){
+            endOfFile = true;
+            //pthread_mutex_unlock(&myInputMutex);
+            break;
+        }
+        //cout << "Thread #" << std::this_thread::get_id() << ": start processing " << filename << endl;
+        //pthread_mutex_unlock(&myInputMutex);
+        cout << "Will Convert : " << filename << endl;
+
+        Convert(filename);
+        if(!keepGroups){
+            cout << "Will Sort : " << filename << endl;
+            Sort(filename);
+        }
+    }
 
     //Start of the conversion in multi-thread mode
     //Each time a file is converted, a new one is given to the thread
-    for(int k = 0; k < nOfThreads; k++){
-        threads.emplace_back([&input_file, &myInputMutex, &endOfFile](){
-            F2R_Parameters& parameters = F2R_Parameters::getInstance();
-            while(!endOfFile)
-            {
-                string filename = "";
-                pthread_mutex_lock(&myInputMutex);
-                input_file >> filename;
-                if(filename == ""){
-                    endOfFile = true;
-                    pthread_mutex_unlock(&myInputMutex);
-                    break;
-                }
-                cout << "Thread #" << std::this_thread::get_id() << ": start processing " << filename << endl;
-                pthread_mutex_unlock(&myInputMutex);
+    // for(int k = 0; k < nOfThreads; k++){
+    //     threads.emplace_back([&input_file, &myInputMutex, &endOfFile, &keepGroups](){
+    //         while(!endOfFile)
+    //         {
+    //             string filename = "";
+    //             pthread_mutex_lock(&myInputMutex);
+    //             input_file >> filename;
+    //             if(filename == ""){
+    //                 endOfFile = true;
+    //                 pthread_mutex_unlock(&myInputMutex);
+    //                 break;
+    //             }
+    //             cout << "Thread #" << std::this_thread::get_id() << ": start processing " << filename << endl;
+    //             pthread_mutex_unlock(&myInputMutex);
 
-                Convert(filename);
-                if(!parameters.getKeepGroups()){
-                    Sort(filename);
-                }
-            }
-        });
-    }
-    for (int i = 0; i < nOfThreads; i++) {
-        pthread_join(threads[i], NULL);
-    }
+    //             Convert(filename);
+    //             if(!keepGroups){
+    //                 Sort(filename);
+    //             }
+    //         }
+    //     });
+    // }
+    // for (int i = 0; i < nOfThreads; i++) {
+    //     pthread_join(threads[i], NULL);
+    // }
     return 0;
 }
