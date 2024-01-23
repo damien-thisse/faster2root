@@ -1070,8 +1070,6 @@ int sorterF(string FileName, const string & temp_directory, const string & outpu
   //                                                                             //
   //-----------------------------------------------------------------------------//
 
-
-
   //Starting of the chronometer
   timer2.Reset();
   timer2.Start();
