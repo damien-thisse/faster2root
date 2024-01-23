@@ -127,6 +127,7 @@ void Convert(string filename)
   time_type leaf_t_2; //time
   label_type leaf_label_2; //label
   Bool_t leaf_pu_2; //pile-up detection
+
   TFile* root_file = new TFile(ROOTFILENAME.data(), "RECREATE");
   TTree* root_tree = new TTree ("DataTree", "Root tree converted using F2R code");
   if(keepGroups){
@@ -135,13 +136,13 @@ void Convert(string filename)
     root_tree->Branch("time", &leaf_t);
     root_tree->Branch("pileup",&leaf_pu);
     if(energy2){
-      root_tree->Branch("energy2",&leaf_nrj2);
+      root_tree->Branch("nrj2",&leaf_nrj2);
     }
     if(energy3){
-      root_tree->Branch("energy3",&leaf_nrj3);
+      root_tree->Branch("nrj3",&leaf_nrj3);
     }
     if(energy4){
-      root_tree->Branch("energy4",&leaf_nrj4);
+      root_tree->Branch("nrj4",&leaf_nrj4);
     }
     root_tree->Branch("multiplicity",&leaf_mult);
     root_tree->Branch("GroupTimeStamp",&leaf_group_time);
@@ -153,13 +154,13 @@ void Convert(string filename)
     root_tree->Branch("time", &leaf_t_2);
     root_tree->Branch("pileup",&leaf_pu_2);
     if(energy2){
-      root_tree->Branch("energy2",&leaf_nrj2_2);
+      root_tree->Branch("nrj2",&leaf_nrj2_2);
     }
-      if(energy3){
-    root_tree->Branch("energy3",&leaf_nrj3_2);
+    if(energy3){
+      root_tree->Branch("nrj3",&leaf_nrj3_2);
     }
-      if(energy4){
-    root_tree->Branch("energy4",&leaf_nrj4_2);
+    if(energy4){
+      root_tree->Branch("nrj4",&leaf_nrj4_2);
     }
   }
 
@@ -175,8 +176,9 @@ void Convert(string filename)
   while ((data = faster_file_reader_next(reader)) != NULL){
     alias = faster_data_type_alias(data);
 
-            // If data are grouped
+    // If data are grouped
     if (alias == GROUP_TYPE_ALIAS){ //in this condition, the data are grouped
+
       leaf_nrj.clear();
       if(energy2) leaf_nrj2.clear();
       if(energy3) leaf_nrj3.clear();
@@ -185,6 +187,7 @@ void Convert(string filename)
       leaf_label.clear(); 
       leaf_pu.clear();
       leaf_mult = 0;
+
       lsize = faster_data_load(data, group_buffer); // get group data
       group_reader = faster_buffer_reader_open(group_buffer, lsize); //open group reader
 
@@ -439,24 +442,24 @@ void Convert(string filename)
           leaf_t.push_back((time_type)clock_g);
           leaf_mult++;
         }
-
-        faster_buffer_reader_close (group_reader);
-        if(keepGroups && leaf_mult > 0) root_tree->Fill(); //if we keep groups, we save the vectors in the tree
-        else if (!keepGroups){
-          for(int ev = 0; ev < leaf_mult; ev++){ //else, we have to loop on all the events
-            leaf_label_2 = leaf_label.at(ev);
-            leaf_nrj_2 = leaf_nrj.at(ev);
-            if(energy2) leaf_nrj2_2 = leaf_nrj2.at(ev);
-            if(energy3) leaf_nrj3_2 = leaf_nrj3.at(ev);
-            if(energy4) leaf_nrj4_2 = leaf_nrj4.at(ev);
-            leaf_t_2 = leaf_t.at(ev);
-            leaf_pu_2= leaf_pu.at(ev);
-            root_tree->Fill();
-          }
+      }
+      faster_buffer_reader_close (group_reader);
+      if(keepGroups && leaf_mult > 0) root_tree->Fill(); //if we keep groups, we save the vectors in the tree
+      else if (!keepGroups){
+        for(int ev = 0; ev < leaf_mult; ev++){ //else, we have to loop on all the events
+          leaf_label_2 = leaf_label.at(ev);
+          leaf_nrj_2 = leaf_nrj.at(ev);
+          if(energy2) leaf_nrj2_2 = leaf_nrj2.at(ev);
+          if(energy3) leaf_nrj3_2 = leaf_nrj3.at(ev);
+          if(energy4) leaf_nrj4_2 = leaf_nrj4.at(ev);
+          leaf_t_2 = leaf_t.at(ev);
+          leaf_pu_2= leaf_pu.at(ev);
+          root_tree->Fill();
         }
       }
     }
     else if(alias != GROUP_TYPE_ALIAS){
+
       leaf_nrj.clear(); //energy
       if(energy2) leaf_nrj2.clear(); //used if QDC2
       if(energy3) leaf_nrj3.clear(); //used if QDC3
