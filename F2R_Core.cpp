@@ -600,7 +600,7 @@ void Convert(string filename)
   root_file->Close();
 }
 
-void Sort(std::string filename){
+void Sort(string filename){
   F2R_Parameters& parameters = F2R_Parameters::getInstance();
 
   map<int, int> myID = parameters.getIDTable();

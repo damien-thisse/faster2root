@@ -22,10 +22,12 @@ public:
     bool setIDTable();
 
     int getMaxEnergyBranchNeeded() const {return F2R_MaxEnergyBranchNeeded;}
-    std::string getOutputDirectory() const {return F2R_OutputDirectory;}
+    int getNumberOfThread() const {return F2R_NumberOfThreads;}
     bool getKeepGroups() const {return F2R_KeepGroups;}
     std::map<int,int> getIDTable() const {return F2R_IDTable;}
-    
+    std::string getListOfFiles() const {return F2R_ListOfFiles;}
+    std::string getOutputDirectory() const {return F2R_OutputDirectory;}
+
 private:
     // Constructeur privé pour empêcher l'instanciation directe
     F2R_Parameters();
@@ -47,8 +49,8 @@ private:
     std::string F2R_IDTableFile;
     int F2R_NumberOfThreads;
     bool F2R_KeepGroups;
-
     int F2R_MaxEnergyBranchNeeded;
+    
 };
 
 #endif //F2R_PARAMETERS
