@@ -4,12 +4,27 @@
 #include <algorithm>
 #include <numeric>
 #include<string>
+#include<fstream>
+#include<pthread.h>
 #include"TROOT.h"
 
 using label_type = UShort_t;
 using time_type = ULong64_t;
 using nrj_type = Int_t;
 
+struct thread_data{
+    std::ifstream files;
+    pthread_mutex_t mutex;
+    bool endOfFile;
+    bool keepGroups;
+
+    thread_data(const std::string& filename, bool EoF, bool KG) : files(filename), endOfFile(EoF), keepGroups(KG) {
+        // Vous pouvez effectuer d'autres initialisations ici si nécessaire
+        pthread_mutex_init(&mutex, NULL);
+    }
+};
+
+void* process(void* arg);
 //Create, fill, and save the converted root file for a given FASTER file
 void Convert(std::string filename);
 void Sort(std::string filename);

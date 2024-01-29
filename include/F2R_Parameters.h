@@ -1,7 +1,7 @@
 #ifndef F2R_PARAMETERS
 #define F2R_PARAMETERS
 
-#pragma once
+//#pragma once
 
 #include<map>
 #include<string>

@@ -1,5 +1,5 @@
 final_directory: Output/
-number_of_threads: 2
+number_of_threads: 4
 input_file: filename.dat
 keep_groups: false
 id_file: ID.dat

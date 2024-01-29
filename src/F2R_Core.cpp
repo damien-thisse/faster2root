@@ -35,6 +35,31 @@
 
 using namespace std;
 
+void* process(void* arg)
+{
+  thread_data* data = (thread_data*)arg;
+  while(!data->endOfFile)
+  {
+    string filename = "";
+    pthread_mutex_lock(&data->mutex);
+    data->files >> filename;
+    if(filename == ""){
+        data->endOfFile = true;
+        pthread_mutex_unlock(&data->mutex);
+        break;
+    }
+    pthread_mutex_unlock(&data->mutex);
+    printf("Will Convert : %s\n", filename.data());
+
+    Convert(filename);
+    if(!data->keepGroups){
+        printf("Will Sort : %s\n", filename.data());
+        Sort(filename);
+    }
+  }
+  return nullptr;
+}
+
 void Convert(string filename)
 {
   F2R_Parameters& parameters = F2R_Parameters::getInstance();
@@ -127,7 +152,6 @@ void Convert(string filename)
   time_type leaf_t_2; //time
   label_type leaf_label_2; //label
   Bool_t leaf_pu_2; //pile-up detection
-
   TFile* root_file = new TFile(ROOTFILENAME.data(), "RECREATE");
   TTree* root_tree = new TTree ("DataTree", "Root tree converted using F2R code");
   if(keepGroups){
@@ -163,7 +187,6 @@ void Convert(string filename)
       root_tree->Branch("nrj4",&leaf_nrj4_2);
     }
   }
-
   //END OF SETUP, NOW TOUGH THINGS ARE STARTING !!
 
   //while there are data to be read...
